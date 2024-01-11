@@ -3,6 +3,7 @@ const UserModel = require('../user/user.model')
 const autoBind = require('auto-bind')
 const { AuthMessage } = require('./auth.messages')
 const { randomInt } = require('crypto')
+const jwt = require('jsonwebtoken')
 
 class AuthService {
     #model
@@ -46,15 +47,23 @@ class AuthService {
         }
         if (!user.verifiedMobile) {
             user.verifiedMobile = true
-            await user.save()
         }
-        return user
+
+        const accessToken = this.signToken({ mobile, id: user._id })
+        user.accessToken = accessToken
+        await user.save()
+
+        return accessToken
     }
 
     async checkExistByMobile(mobile) {
         const user = this.#model.findOne({ mobile })
         if (!user) throw new createHttpError.NotFound(AuthMessage.NotFound)
         return user
+    }
+
+    signToken(payload) {
+        return jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1y' })
     }
 }
 

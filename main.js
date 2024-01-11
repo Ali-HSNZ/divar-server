@@ -26,7 +26,7 @@ const main = async () => {
     AllExceptionHandler(app)
 
     app.listen(port, () => {
-        console.log(`server started: http://localhost:${port}\n`)
+        console.log(`server started: http://localhost:${port}`)
     })
 }
 main()
