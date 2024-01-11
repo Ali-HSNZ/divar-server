@@ -16,7 +16,7 @@ class AuthService {
         const now = new Date().getTime()
         const otp = {
             code: randomInt(10000, 99999),
-            expiredIn: now + 1000 * 60 * 2,
+            expiredIn: now + 1000 * 60 * 2, // 2 minutes
         }
 
         if (!user) {
@@ -27,14 +27,12 @@ class AuthService {
             return newUser
         }
 
-        if (user.otp && user.otp.expiresIn > now) {
+        if (user.otp && user.otp.expiredIn > now) {
             throw new createHttpError.BadRequest(AuthMessage.OtpCodeNotExpired)
         }
 
         user.otp = otp
         await user.save()
-
-        return user
     }
 
     async checkOTP(mobile, code) {}
