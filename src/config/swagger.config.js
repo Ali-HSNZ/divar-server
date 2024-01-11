@@ -5,12 +5,8 @@ const swaggerConfig = (app) => {
     const swaggerDocument = swaggerJsDoc({
         swaggerDefinition: {
             info: {
-                title: 'Divar Node-JS',
+                title: 'Divar',
                 description: '',
-
-
-
-                
                 version: '1.0.0',
             },
         },
