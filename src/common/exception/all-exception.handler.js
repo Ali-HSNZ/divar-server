@@ -1,5 +1,5 @@
 const AllExceptionHandler = (app) => {
-    app.use((err, req, res, nex) => {
+    app.use((err, req, res, next) => {
         let status = err?.status ?? err.statusCode ?? err.code
 
         if (!status || isNaN(+status) || status > 511 || status < 200) {

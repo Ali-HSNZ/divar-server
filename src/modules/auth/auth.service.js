@@ -12,7 +12,7 @@ class AuthService {
         autoBind(this)
     }
     async sendOTP(mobile) {
-        const user = this.#model.findOne({ mobile })
+        const user = await this.#model.findOne({ mobile })
         const now = new Date().getTime()
         const otp = {
             code: randomInt(10000, 99999),

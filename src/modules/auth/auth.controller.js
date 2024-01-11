@@ -13,7 +13,7 @@ class AuthController {
         try {
             const { mobile } = req.body
             await this.#service.sendOTP(mobile)
-            return { message: AuthMessage.SendOTPSuccessfully }
+            return res.json({ message: AuthMessage.SendOTPSuccessfully })
         } catch (error) {
             next(error)
         }
