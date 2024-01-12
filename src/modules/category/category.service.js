@@ -50,7 +50,7 @@ class CategoryService {
     }
     async alreadyExistBySlug(slug) {
         const category = this.#model.findOne({ slug })
-        if (!category) {
+        if (category) {
             throw new createHttpError.Conflict(CategoryMessages.AlreadyExist)
         }
         return category
