@@ -2,8 +2,6 @@
  * @swagger
  * tags:
  *  name: Auth
- *  description: Auth module for routes
- *
  */
 
 /**
@@ -66,6 +64,19 @@
  *              application/json:
  *                  schema:
  *                      $ref: "#/components/schemas/CheckOTP"
+ *      responses:
+ *          200:
+ *              description: success
+ */
+
+/**
+ * @swagger
+ *
+ * /auth/logout:
+ *  get:
+ *      summary: logout user
+ *      tags:
+ *          -   Auth
  *      responses:
  *          200:
  *              description: success

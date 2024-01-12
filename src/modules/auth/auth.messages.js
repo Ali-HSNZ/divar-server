@@ -5,6 +5,7 @@ const AuthMessage = {
     NotFound: 'user not found',
     OtpCodeIsIncorrect: 'otp code is incorrect',
     LoginSuccessfully: 'you login successfully',
+    LogoutSuccessfully: 'Successfully logged out',
 }
 
 module.exports = {
