@@ -6,7 +6,7 @@ const CategorySchema = new Schema(
         slug: { type: String, required: true, index: true },
         icon: { type: String, required: true },
         parent: { type: Types.ObjectId, ref: 'Category', required: false },
-        parents: { type: [Types.ObjectId], ref: 'Category', required: false, default: [] },
+        parents: { type: [Types.ObjectId], required: false, default: [] },
     },
     { versionKey: false, id: false, toJSON: { virtuals: true } }
 )
@@ -16,6 +16,12 @@ CategorySchema.virtual('children', {
     foreignField: 'parent',
 })
 
-const CategoryModel = model('category', CategorySchema)
+function autoPopulate(next) {
+    this.populate([{ path: 'children' }])
+    next()
+}
+CategorySchema.pre('find', autoPopulate).pre('findOne', autoPopulate)
+
+const CategoryModel = model('Category', CategorySchema)
 
 module.exports = CategoryModel
