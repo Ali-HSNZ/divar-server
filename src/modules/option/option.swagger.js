@@ -22,6 +22,8 @@
  *                      type: string
  *                  category:
  *                      type: string
+ *                  required:
+ *                      type: boolean
  *                  guid:
  *                      type: string
  *                  type:
