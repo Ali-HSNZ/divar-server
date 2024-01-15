@@ -5,6 +5,7 @@ const createHttpError = require('http-errors')
 const OptionMessages = require('./option.message')
 const slugify = require('slugify')
 const { Types } = require('mongoose')
+const { isTrue, isFalse } = require('../../common/utils/functions')
 
 class OptionService {
     #categoryModel
@@ -20,11 +21,16 @@ class OptionService {
         optionDto.key = slugify(optionDto.key, { trim: true, replacement: '_', lower: true })
 
         await this.alreadyExistByCategoryAndKey(optionDto.key, category._id)
+
         if (optionDto?.enum && typeof optionDto.enum === 'string') {
             optionDto.enum = optionDto.enum.split(',')
         } else if (!Array.isArray(optionDto.enum)) {
             optionDto.enum = []
         }
+
+        if (optionDto?.required && isTrue(optionDto.required)) optionDto.required = true
+        if (optionDto?.required && isFalse(optionDto.required)) optionDto.required = false
+
         const option = await this.#model.create(optionDto)
         return option
     }
