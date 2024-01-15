@@ -56,6 +56,11 @@ class OptionService {
         return await this.checkExistByOptionId(id)
     }
 
+    async removeById(id) {
+        await this.checkExistByOptionId(id)
+        return await this.#model.deleteOne({ _id: id })
+    }
+
     async findByCategoryId(categoryId) {
         return await this.#model.aggregate([
             {
