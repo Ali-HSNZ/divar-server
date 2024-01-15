@@ -6,6 +6,7 @@ const OptionMessages = require('./option.message')
 const slugify = require('slugify')
 const { Types } = require('mongoose')
 const { isTrue, isFalse } = require('../../common/utils/functions')
+const { isValidObjectId } = require('mongoose')
 
 class OptionService {
     #categoryModel
@@ -28,11 +29,43 @@ class OptionService {
             optionDto.enum = []
         }
 
-        if (optionDto?.required && isTrue(optionDto.required)) optionDto.required = true
-        if (optionDto?.required && isFalse(optionDto.required)) optionDto.required = false
+        if (isTrue(optionDto.required)) optionDto.required = true
+        if (isFalse(optionDto.required)) optionDto.required = false
 
         const option = await this.#model.create(optionDto)
         return option
+    }
+
+    async update(id, optionDto) {
+        const existOption = await this.checkExistByOptionId(id)
+
+        if (optionDto.category && isValidObjectId(optionDto.category)) {
+            const category = await this.checkExistByCategoryId(optionDto.category)
+            optionDto.category = category._id
+        } else {
+            delete optionDto.category
+        }
+
+        if (optionDto.key) {
+            optionDto.key = slugify(optionDto.key, { trim: true, replacement: '_', lower: true })
+            if (optionDto.category) {
+                optionDto.category = existOption.category = optionDto.category
+            }
+
+            await this.alreadyExistByCategoryAndKey(optionDto.key, existOption.category)
+        }
+
+        if (optionDto?.enum && typeof optionDto.enum === 'string') {
+            optionDto.enum = optionDto.enum.split(',')
+        } else if (!Array.isArray(optionDto.enum)) {
+            delete optionDto.enum
+        }
+
+        if (isTrue(optionDto.required)) optionDto.required = true
+        else if (isFalse(optionDto.required)) optionDto.required = false
+        else delete optionDto.required
+
+        return await this.#model.updateOne({ _id: id }, { $set: optionDto })
     }
 
     async checkExistByCategoryId(id) {
@@ -44,7 +77,9 @@ class OptionService {
     }
 
     async checkExistByOptionId(id) {
-        const option = await this.#model.findById(id)
+        const option = await this.#model
+            .findById(id, { __v: 0 })
+            .populate('category', { name: 1, slug: 1, id: 1 })
         if (!option) {
             throw new createHttpError.NotFound(OptionMessages.NotFound)
         }

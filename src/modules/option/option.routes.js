@@ -8,6 +8,7 @@ router.get('/by-category-id/:categoryId', optionController.findByCategoryId)
 router.get('/by-category-slug/:categorySlug', optionController.findByCategorySlug)
 router.get('/:id', optionController.findById)
 router.delete('/:id', optionController.removeById)
+router.put('/:id', optionController.update)
 router.get('/', optionController.find)
 
 module.exports = {
